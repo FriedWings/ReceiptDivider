@@ -1,0 +1,27 @@
+page-start-up {
+}
+
+button {
+	display: inline-block;
+	position: relative;
+}
+
+#centerBottom {
+	position: absolute;
+	bottom: 4em;
+	width: 100%;
+	text-align: center;
+	margin-left: -16px; /* to center button */
+}
+
+ion-slides {
+	color: lightgrey;
+	padding-top: 5em;
+	height: 25em;
+}
+
+.startUpPageContent{
+	background-image: url('/assets/imgs/temporary-background.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
