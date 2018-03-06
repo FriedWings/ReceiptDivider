@@ -1,0 +1,33 @@
+<ion-content padding>
+  <ion-slides spaceBetween='20' id="authPageSlides">
+    <ion-slide>
+      <h2 class="slide-title">SMS Authentication</h2>
+
+      <ion-input class='authIonInput' placeholder="Phone number" [(ngModel)]=phoneNumber></ion-input>
+
+      <button ion-button small outline strong color='secondary' (click)='sendSms(phoneNumber)'>Send SMS</button>
+      <div style="height: 2.5em"><ion-spinner *ngIf="showSpinner" id='loadingSpinner' name='crescent'></ion-spinner></div>
+
+    </ion-slide>
+
+    <ion-slide>
+      <h2 class="slide-title">Login</h2>
+      <ion-input class='authIonInput' min="0" max="999999" type="number" placeholder="Code" [(ngModel)]=smsCode></ion-input>
+
+      <button ion-button small outline strong color='secondary' (click)='signIn(smsCode)'>Login</button>
+      <button ion-button small outline strong color='secondary' (click)='slideTo(0)'>Back</button>
+      <div style="height: 2.5em"><ion-spinner *ngIf="showSpinner" id='loadingSpinner' name='crescent'></ion-spinner></div>
+    </ion-slide>
+
+    <ion-slide>
+      <h2 class="slide-title">Setup Account</h2>
+      <ion-input class='authIonInput' placeholder="Profile Name" [(ngModel)]=profileName></ion-input>
+      
+      <button ion-button outline strong color='secondary' small (click)='setupAccount(profileName)'>Finish Setup</button>
+      <div style="height: 2.5em"><ion-spinner *ngIf="showSpinner" id='loadingSpinner' name='crescent'></ion-spinner></div>
+    </ion-slide>
+  </ion-slides>
+
+  <div id="recaptcha-container"></div>
+
+</ion-content>
