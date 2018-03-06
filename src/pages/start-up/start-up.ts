@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { AuthenticationPage } from '../authentication/authentication';
 
 @IonicPage()
 @Component({
@@ -9,12 +10,11 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 export class StartUpPage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {
-
   }
 
   openPage() {
   	// Change page to the authentication page.
-    // this.navCtrl.push(authenticationPage);
+    this.navCtrl.push(AuthenticationPage);
   }
 
 
