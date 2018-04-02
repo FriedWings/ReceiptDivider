@@ -1,45 +1,54 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Platform } from 'ionic-angular'; 
 
 import firebase from 'firebase';
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBlDv7Gf430NVxFGX-Qa-V5TMu5SZJKTrI",
-  authDomain: "ionicauthtst.firebaseapp.com",
-  databaseURL: "https://ionicauthtst.firebaseio.com",
-  projectId: "ionicauthtst",
-  storageBucket: "ionicauthtst.appspot.com",
-  messagingSenderId: "197823917329"
-};
 
 @Injectable()
 export class AuthProvider {
   verificationId;
 
-  constructor() {
-    firebase.initializeApp(firebaseConfig);
+  constructor(public plt: Platform) {
   }
 
   sendSms(phoneNumber: string, recaptchaVerifier){
     return new Promise((resolve, reject) => {
       const phoneNumberString = "+" + phoneNumber;
+      console.log('Phonenumber: ' + phoneNumberString);
 
-      firebase.auth().signInWithPhoneNumber(phoneNumberString, recaptchaVerifier)
+      if(this.plt.is('mobileweb')){
+        firebase.auth().signInWithPhoneNumber(phoneNumberString, recaptchaVerifier)
         .then( confirmationResult => {
-            this.verificationId = confirmationResult;
-            resolve();
-      })
-      .catch(function (error) {
-        console.error("SMS not sent", error);
-        reject(error);
-      });
+          this.verificationId = confirmationResult.verificationId;
+          console.log(this.verificationId);
+          resolve();
+        })
+        .catch(function (error) {
+          reject(error);
+        });      
+      }
+      else if(this.plt.is('ios')){
+        console.log('ios platform --TODO');
+      }
+      else if(this.plt.is('android')){
+        (<any>window).FirebasePlugin.verifyPhoneNumber('+61434191241', 60, (credential) => {
+          this.verificationId = credential.verificationId;
+          resolve();
+        }, function(error) {
+          reject(error);
+        });
+      }
+      else { // browser
+        reject();
+      }
     });
+
   }
 
   signIn(smsCode: string){
     return new Promise((resolve, reject) => {
       if(this.verificationId == null) reject('Need to send SMS first');
-      this.verificationId.confirm(smsCode).then((result) => {
+      let signInCreditial = firebase.auth.PhoneAuthProvider.credential(this.verificationId, smsCode);
+      firebase.auth().signInWithCredential(signInCreditial).then((result) => {
         resolve(result);
       }).catch((err) => {
         reject(err);
@@ -54,6 +63,10 @@ export class AuthProvider {
   isAuthenticated(){
     if(firebase.auth().currentUser) return true;
     return false;
+  }
+
+  getUserProfile(){
+    return firebase.auth().currentUser;
   }
 
 }

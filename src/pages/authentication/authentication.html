@@ -3,7 +3,7 @@
     <ion-slide>
       <h2 class="slide-title">SMS Authentication</h2>
 
-      <ion-input class='authIonInput' placeholder="Phone number" [(ngModel)]=phoneNumber></ion-input>
+      <ion-input class='authIonInput' type="number" placeholder="Phone number" [(ngModel)]=phoneNumber></ion-input>
 
       <button ion-button small outline strong color='secondary' (click)='sendSms(phoneNumber)'>Send SMS</button>
       <div style="height: 2.5em"><ion-spinner *ngIf="showSpinner" id='loadingSpinner' name='crescent'></ion-spinner></div>

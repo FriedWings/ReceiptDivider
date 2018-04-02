@@ -14,8 +14,8 @@ page-start-up {
 	}
 
 	.startUpPageContent{
-		background-image: url('/assets/imgs/temporary-background.jpg');
-	    background-repeat: no-repeat;
+		background-image: url('/assets/imgs/temporary-background.jpg') no-repeat;
 	    background-size: cover;
+	    -webkit-background-size: 280% auto;
 	}
 }

@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button icon-only menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+
+    <ion-buttons end>
+      <button ion-button icon-only (click)="iconClick($event)">
+        <img id='profileIcon' src="/assets/profile-icons/man.svg">
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding no-bounce>
+  <ion-slides pager id="horizontalSlider">
+    <ion-slide style="background-color: green">
+      <h2>Slide 1</h2>
+    </ion-slide>
+
+    <ion-slide style="background-color: blue">
+      <h2>Slide 2</h2>
+    </ion-slide>
+
+    <ion-slide style="background-color: red">
+      <h2>Slide 3</h2>
+    </ion-slide>
+  </ion-slides>
+
+  <ion-slides  id="verticalSlider" direction='vertical'  slidesPerView="2" spaceBetween="5em">
+    <ion-slide style="background-color: green">
+      <h2>Slide 1</h2>
+    </ion-slide>
+
+    <ion-slide style="background-color: blue">
+      <h2>Slide 2</h2>
+    </ion-slide>
+
+    <ion-slide style="background-color: red">
+      <h2>Slide 3</h2>
+    </ion-slide>
+  </ion-slides>
+
+  <ion-fab id="fabButton">
+    <button ion-fab id="fabIconButton" (click)=presentAddReceiptSheet()><ion-icon name="add"></ion-icon></button>
+  </ion-fab>
+</ion-content>

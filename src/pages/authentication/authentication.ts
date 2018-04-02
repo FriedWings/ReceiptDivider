@@ -1,9 +1,13 @@
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams, ToastController, Slides} from 'ionic-angular';
+import { IonicPage, NavController, Platform, ToastController, Slides} from 'ionic-angular';
 import { NgClass } from '@angular/common';
+
+// Pages
+import { MainPage } from '../../pages/main/main';
 
 // Providers
 import { AuthProvider } from '../../providers/auth/auth';
+import { ToastProvider } from '../../providers/toast/toast';
 
 import firebase from 'firebase';
 
@@ -17,16 +21,18 @@ export class AuthenticationPage {
   @ViewChild(Slides) slides: Slides;
   showSpinner: boolean = false;
 
-  public recaptchaVerifier: firebase.auth.RecaptchaVerifier;
+  public recaptchaVerifier: firebase.auth.RecaptchaVerifier = null;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private _authProvider: AuthProvider, private toastCtrl: ToastController) {
-    if(_authProvider.isAuthenticated()) console.log("user already signed in, skip to main page");
+  constructor(public navCtrl: NavController, public plt: Platform , private _authProvider: AuthProvider, private _toastCtrl: ToastProvider) {
+    if(_authProvider.isAuthenticated()) this.finishSetup();
   }
 
   ionViewDidLoad() {
-    this.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-      'size': 'invisible'
-    });
+    if(!this.plt.is('ios') || !this.plt.is('android')){
+      this.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+        'size': 'invisible'
+      }); 
+    }
 
     // Lock the slides
     this.slides.lockSwipes(true);
@@ -35,15 +41,22 @@ export class AuthenticationPage {
   sendSms(phoneNumber: string){
     this.showSpinner = true;
 
-    this._authProvider.sendSms(phoneNumber, this.recaptchaVerifier).then((data) => {
+    this._authProvider.sendSms(phoneNumber, this.recaptchaVerifier)
+    .then((data) => {
       this.showSpinner = false;
+      this._toastCtrl.toastMessage('SMS successfully sent.', 3000);
       this.slideTo(1);
     }).catch((err) => {
       this.showSpinner = false;
       if(err.code = "auth/invalid-phone-number"){
-        this.toastMessage('Invalid phone number. Please check input and retry.', 4000);
+        this._toastCtrl.toastMessage('Invalid phone number. Please check input and retry.', 4000);
       }
-
+      else if(err.code == "auth/too-many-requests"){
+        this._toastCtrl.toastMessage('Too many requests sent. Please try again later.', 4000);
+      }
+      else {
+        this._toastCtrl.toastMessage('An error has occured. Please check input and retry.', 4000);
+      }
       console.log(err);
     }); 
   }
@@ -52,26 +65,21 @@ export class AuthenticationPage {
     this.showSpinner = true;
     this._authProvider.signIn(smsCode).then((result) => {
       this.showSpinner = false;
-      let user = firebase.auth().currentUser;
-
-      // If profile not setup, goto setup slide
-      if(!user.displayName) this.slideTo(2);
-      else this.finishSetup();
-
+      this.finishSetup();
     }).catch((err) => {
       this.showSpinner = false;
-      console.log(err);
+      console.log(JSON.stringify(err));
       if(err == 'Need to send SMS first' || err.code=='auth/argument-error'){
-        this.toastMessage('Please send SMS first!', 3000);
+        this._toastCtrl.toastMessage('Please send SMS first!', 3000);
       }
       else if(err.code == "auth/invalid-verification-code"){
-        this.toastMessage('Invalid SMS verification code! Please check the phone number and resend the verification code.', 7000);
+        this._toastCtrl.toastMessage('Invalid SMS verification code! Please check the phone number and resend the verification code.', 7000);
       }
       else if(err.code == "auth/too-many-requests"){
-        this.toastMessage('Too many requests sent. Please try again later.', 4000);
+        this._toastCtrl.toastMessage('Too many requests sent. Please try again later.', 4000);
       }
       else{
-        this.toastMessage('Please check phone number and resend verification code again!', 4000);
+        this._toastCtrl.toastMessage('Please check phone number and resend verification code again!', 4000);
       }
     })
   }
@@ -93,29 +101,19 @@ export class AuthenticationPage {
       this.finishSetup();
     }).catch((err) => {
       this.showSpinner = false;
-      this.toastMessage('Please place a valid input', 4000);
+      this._toastCtrl.toastMessage('Please place a valid input', 4000);
       console.log("ERROR DURING ACCOUNT SETUP" + err);
     });
   }
 
   finishSetup(){
-    this.toastMessage('Welcome ' + firebase.auth().currentUser.displayName ,3000)
-
-    console.log('FINISHED SETUP GOTO MAIN PAGE');
-    // this.navCtrl.setRoot();
+    console.log(firebase.auth().currentUser.displayName)
+    if(!firebase.auth().currentUser.displayName) {
+      console.log('Sent');
+      this.slideTo(2);
+      return;
+    }    
+    this._toastCtrl.toastMessage('Welcome ' + firebase.auth().currentUser.displayName ,3000)
+    this.navCtrl.setRoot(MainPage);
   }
-
-  toastMessage(message: string, duration: number) {
-    let toast = this.toastCtrl.create({
-      message: message,
-      duration: duration,
-      position: 'bottom'
-    });
-
-    toast.onDidDismiss(() => {
-    });
-
-    toast.present();
-  }
-
 }

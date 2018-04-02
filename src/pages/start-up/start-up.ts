@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+
+import firebase from 'firebase';
+
 import { AuthenticationPage } from '../authentication/authentication';
+import { MainPage } from '../main/main';
 
 @IonicPage()
 @Component({
@@ -10,6 +14,9 @@ import { AuthenticationPage } from '../authentication/authentication';
 export class StartUpPage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) this.navCtrl.setRoot(MainPage);
+    });
   }
 
   openPage() {
