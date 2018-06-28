@@ -25,7 +25,6 @@ export class MyApp {
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public _authProvider: AuthProvider) {
     this.initializeApp();
 
-
     // firebase.auth().onAuthStateChanged((user) => {
     //   if (user) {
     //     this.rootPage = MainPage;
@@ -33,22 +32,14 @@ export class MyApp {
     //   else this.rootPage = StartUpPage;
     // });
 
-    
-    // this.navCtrl.setRoot(StartUpPage).
-    // this.navCtrl.setRoot(StartUpPage).then((data) => {
-    //   console.log(JSON.stringify(data));
-    // }).catch((err) => {
-    //   console.log(JSON.stringify(err));
-    // });
-
 
     this.pages = [
       { title: 'Home', component: MainPage },
-      { title: 'Pending payments', component: MainPage },
-      { title: 'Scan receipt', component: MainPage },
-      { title: 'About', component: MainPage },
-      { title: 'Settings', component: MainPage },
-      { title: 'Logout', component: MainPage },
+      // { title: 'Pending payments', component: MainPage },
+      // { title: 'Scan receipt', component: MainPage },
+      // { title: 'About', component: MainPage },
+      // { title: 'Settings', component: MainPage },
+      // { title: 'Logout', component: MainPage },
     ];
   }
 

@@ -1,0 +1,51 @@
+<ion-header>
+	<ion-toolbar>
+		<ion-title>
+		  Add {{ paramData.paymentType }}
+		</ion-title>
+		<ion-buttons start>
+			<button ion-button (click)="dismiss(false)">
+				<span ion-text color="primary" showWhen="ios">Cancel</span>
+				<ion-icon name="md-close" showWhen="android,windows"></ion-icon>
+			</button>
+		</ion-buttons>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content>
+	<div icon-only id='profileIcon'>
+		<img src="assets/profile-icons/man.svg">
+		<span>{{ paramData.name }}</span>
+	</div>
+
+	<div id="textInputFields">  		
+		<ion-item>
+			<ion-label floating>Description</ion-label>
+			<ion-input type="text" [(ngModel)]="description"></ion-input>
+		</ion-item>
+
+		<ion-item>
+			<ion-label floating>Amount</ion-label>
+			<ion-input type="number" [(ngModel)]="amount"></ion-input>
+		</ion-item>   
+	</div>
+
+	<ion-list id="paidAndDateContainer">
+		<ion-item>
+			<ion-label>Date</ion-label>
+			<ion-datetime displayFormat="DDDD D/M/YY" pickerFormat="D/M/YY " [(ngModel)]="date"></ion-datetime>
+    </ion-item>  
+    <ion-item *ngIf="paramData.enablePaidOption">
+      <ion-label>Paid</ion-label>
+      <ion-checkbox color="dark" [(ngModel)]="paid"></ion-checkbox>
+    </ion-item>			  
+    <ion-item *ngIf="paramData.enableSendSMSReminder">
+      <ion-label>Send SMS Reminder</ion-label>
+      <ion-checkbox color="dark" [(ngModel)]="sms"></ion-checkbox>
+    </ion-item>		
+	</ion-list>
+
+	<div id="nextButton">
+		<button ion-button full (click)="createPayment()" [disabled]="!buttonEnabled">Add {{ paramData.paymentType }}</button>
+	</div>
+</ion-content>

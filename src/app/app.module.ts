@@ -7,12 +7,18 @@ import { StartUpPage } from '../pages/start-up/start-up';
 import { AuthenticationPage } from '../pages/authentication/authentication';
 import { MainPage } from '../pages/main/main';
 import { IconPopupPage } from '../pages/icon-popup/icon-popup';
+import { AddPaymentPage } from '../pages/add-payment/add-payment';
+import { SelectPersonPage } from '../pages/select-person/select-person';
 
+import { Sim } from '@ionic-native/sim';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Firebase } from '@ionic-native/firebase';
+import { Contacts } from '@ionic-native/contacts';
+
 import { AuthProvider } from '../providers/auth/auth';
 import { ToastProvider } from '../providers/toast/toast';
+import { FirestoreProvider } from '../providers/firestore/firestore';
 
 import firebase from 'firebase';
 
@@ -24,6 +30,7 @@ firebase.initializeApp({
   storageBucket: "ionicauthtst.appspot.com",
   messagingSenderId: "197823917329"
 });
+firebase.firestore().enablePersistence();
 
 @NgModule({
   declarations: [
@@ -31,7 +38,9 @@ firebase.initializeApp({
     StartUpPage,
     AuthenticationPage,
     MainPage,
-    IconPopupPage
+    IconPopupPage,
+    AddPaymentPage,
+    SelectPersonPage
   ],
   imports: [
     BrowserModule,
@@ -43,7 +52,9 @@ firebase.initializeApp({
     StartUpPage,
     AuthenticationPage,
     MainPage,
-    IconPopupPage
+    IconPopupPage,
+    AddPaymentPage,
+    SelectPersonPage
   ],
   providers: [
     StatusBar,
@@ -51,7 +62,10 @@ firebase.initializeApp({
     Firebase,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     AuthProvider,
-    ToastProvider
+    ToastProvider,
+    Sim,
+    FirestoreProvider,
+    Contacts
   ]
 })
 export class AppModule {}

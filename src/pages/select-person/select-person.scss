@@ -1,0 +1,24 @@
+page-select-person {
+	#fabButton {
+		bottom: 0;
+		right: 0;
+		margin-bottom: 1.5em;
+		margin-right: 1.5em;
+	}
+
+	#fabIconButton {
+		background-color: darkorange;
+		color: black;
+	}
+
+	#loadingSpinner * {
+		margin-top: 0.5em;
+		stroke: #f31c38;
+		position: absolute;
+	}
+
+	#spinnerContainer {
+		text-align: center;
+		margin-top: 50%;
+	}
+}

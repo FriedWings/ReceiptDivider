@@ -12,11 +12,9 @@ export class AuthProvider {
 
   sendSms(phoneNumber: string, recaptchaVerifier){
     return new Promise((resolve, reject) => {
-      const phoneNumberString = "+" + phoneNumber;
-      console.log('Phonenumber: ' + phoneNumberString);
 
       if(this.plt.is('mobileweb')){
-        firebase.auth().signInWithPhoneNumber(phoneNumberString, recaptchaVerifier)
+        firebase.auth().signInWithPhoneNumber(phoneNumber, recaptchaVerifier)
         .then( confirmationResult => {
           this.verificationId = confirmationResult.verificationId;
           console.log(this.verificationId);
@@ -30,15 +28,21 @@ export class AuthProvider {
         console.log('ios platform --TODO');
       }
       else if(this.plt.is('android')){
-        (<any>window).FirebasePlugin.verifyPhoneNumber('+61434191241', 60, (credential) => {
+        console.log(phoneNumber);
+        (<any>window).FirebasePlugin.verifyPhoneNumber(phoneNumber, 60, (credential) => {
           this.verificationId = credential.verificationId;
           resolve();
-        }, function(error) {
-          reject(error);
+        }, function(err) {
+          console.log(err);
+          if(err = "auth/invalid-phone-number")
+            reject('Invalid phone number. Please check input and retry.');
+          else if(err == "auth/too-many-requests")
+            reject('Too many requests sent. Please try again later');
+          else reject('An error has occured. Please check input and retry.');
         });
       }
-      else { // browser
-        reject();
+      else {
+        reject("Application running on invalid platform");
       }
     });
 

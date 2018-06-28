@@ -8,12 +8,12 @@ page-main {
 	}
 
 	#horizontalSlider {
-		height: 12em;
+		height: 30%;
 		margin-bottom: 1em;
 	}
 
 	#verticalSlider {
-		height: 27.5em;
+		height: 67%;
 	}
 
 	#fabButton {
@@ -24,10 +24,90 @@ page-main {
 	}
 
 	#fabIconButton {
-		background-color: red;
+		background-color: darkorange;
 		color: black;
 	}
 
+	#loadingSpinner * {
+		margin-top: 0.5em;
+		stroke: #f31c38;
+		position: absolute;
+	}
+
+	#spinnerContainer {
+		text-align: center;
+		margin-top: 35%;
+	}
+
+	#verticalSlider {
+		border-top: 2px solid black;
+
+		.slide-zoom {
+			top: 0;
+			position: absolute;
+			border-bottom: 0.5px solid black;
+			height: inherit;
+		}
+
+		.dataAmount {
+			margin-right: 0.5em;
+		}
+
+		.dataPerson {
+			color: grey;
+			font-size: 0.65em;
+		}
+
+		.dataPerson, .dataDescription {
+			text-align: left;
+			margin: 0;
+			padding-left: 5%;
+		}
+
+		.dataDate {
+			font-size: 0.65em;
+			display: block;
+			color: grey;
+			padding-top: 0.5em;
+		}
+
+		.dataStatusIcon {
+			height: 1em;
+		}
+	
+		#flex-container {
+		    display: flex;
+		    flex-direction: row;
+		    justify-content: space-between;
+		    width: 100%;
+		    height: 100%;
+		    margin: 0 auto;
+		    align-items: center;
+		}
+
+		.leftContainer {
+		    width: 25%;
+		    height: 80%;
+		    border-right: 1px grey solid;
+		}
+
+		.middleContainer {
+		    width: 50%;
+		}
+
+		.rightContainer {
+			display: inline-flex;
+		    align-items: center;
+		    justify-content: flex-end;
+		    width: 30%;
+		}
+
+		.leftContainer, .middleContainer {
+			display: inline-flex;
+		  	flex-direction: column;
+  			justify-content: center;
+		}
+	}
 
 
 }

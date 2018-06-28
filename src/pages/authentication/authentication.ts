@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { IonicPage, NavController, Platform, ToastController, Slides} from 'ionic-angular';
 import { NgClass } from '@angular/common';
+import { Sim } from '@ionic-native/sim';
 
 // Pages
 import { MainPage } from '../../pages/main/main';
@@ -9,6 +10,7 @@ import { MainPage } from '../../pages/main/main';
 import { AuthProvider } from '../../providers/auth/auth';
 import { ToastProvider } from '../../providers/toast/toast';
 
+import { countryDate } from '../../classes/CountryDate';
 import firebase from 'firebase';
 
 @IonicPage()
@@ -20,10 +22,11 @@ import firebase from 'firebase';
 export class AuthenticationPage {
   @ViewChild(Slides) slides: Slides;
   showSpinner: boolean = false;
+  phoneNumber: number;
 
   public recaptchaVerifier: firebase.auth.RecaptchaVerifier = null;
 
-  constructor(public navCtrl: NavController, public plt: Platform , private _authProvider: AuthProvider, private _toastCtrl: ToastProvider) {
+  constructor(public navCtrl: NavController, private sim: Sim, public plt: Platform , private _authProvider: AuthProvider, private _toastCtrl: ToastProvider) {
     if(_authProvider.isAuthenticated()) this.finishSetup();
   }
 
@@ -34,6 +37,14 @@ export class AuthenticationPage {
       }); 
     }
 
+    this.sim.getSimInfo().then(
+      (info) => {
+        console.log('Sim info: ', info);
+        this.phoneNumber = this.getCountryCodeNumber(info.countryCode.toUpperCase())
+      },
+      (err) => console.log('Unable to get sim info: ', err)
+    );
+
     // Lock the slides
     this.slides.lockSwipes(true);
   }
@@ -41,23 +52,14 @@ export class AuthenticationPage {
   sendSms(phoneNumber: string){
     this.showSpinner = true;
 
-    this._authProvider.sendSms(phoneNumber, this.recaptchaVerifier)
+    this._authProvider.sendSms("+" + phoneNumber, this.recaptchaVerifier)
     .then((data) => {
       this.showSpinner = false;
       this._toastCtrl.toastMessage('SMS successfully sent.', 3000);
       this.slideTo(1);
     }).catch((err) => {
       this.showSpinner = false;
-      if(err.code = "auth/invalid-phone-number"){
-        this._toastCtrl.toastMessage('Invalid phone number. Please check input and retry.', 4000);
-      }
-      else if(err.code == "auth/too-many-requests"){
-        this._toastCtrl.toastMessage('Too many requests sent. Please try again later.', 4000);
-      }
-      else {
-        this._toastCtrl.toastMessage('An error has occured. Please check input and retry.', 4000);
-      }
-      console.log(err);
+      this._toastCtrl.toastMessage(err, 4000);
     }); 
   }
 
@@ -68,14 +70,14 @@ export class AuthenticationPage {
       this.finishSetup();
     }).catch((err) => {
       this.showSpinner = false;
-      console.log(JSON.stringify(err));
-      if(err == 'Need to send SMS first' || err.code=='auth/argument-error'){
+
+      if(err == 'Need to send SMS first' || err=='auth/argument-error'){
         this._toastCtrl.toastMessage('Please send SMS first!', 3000);
       }
-      else if(err.code == "auth/invalid-verification-code"){
+      else if(err == "auth/invalid-verification-code"){
         this._toastCtrl.toastMessage('Invalid SMS verification code! Please check the phone number and resend the verification code.', 7000);
       }
-      else if(err.code == "auth/too-many-requests"){
+      else if(err == "auth/too-many-requests"){
         this._toastCtrl.toastMessage('Too many requests sent. Please try again later.', 4000);
       }
       else{
@@ -95,6 +97,7 @@ export class AuthenticationPage {
     let user = firebase.auth().currentUser;
     user.updateProfile({
       displayName: profileName,
+      // phoneNumber: user.phoneNumber,
       photoURL: null
     }).then(() => {
       this.showSpinner = false;
@@ -102,7 +105,6 @@ export class AuthenticationPage {
     }).catch((err) => {
       this.showSpinner = false;
       this._toastCtrl.toastMessage('Please place a valid input', 4000);
-      console.log("ERROR DURING ACCOUNT SETUP" + err);
     });
   }
 
@@ -116,4 +118,9 @@ export class AuthenticationPage {
     this._toastCtrl.toastMessage('Welcome ' + firebase.auth().currentUser.displayName ,3000)
     this.navCtrl.setRoot(MainPage);
   }
+
+  getCountryCodeNumber(isoCode: string){
+    return countryDate[isoCode];
+  }
+
 }

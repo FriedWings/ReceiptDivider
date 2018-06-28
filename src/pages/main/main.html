@@ -6,14 +6,14 @@
 
     <ion-buttons end>
       <button ion-button icon-only (click)="iconClick($event)">
-        <img id='profileIcon' src="/assets/profile-icons/man.svg">
+        <img id='profileIcon' src="assets/profile-icons/man.svg">
       </button>
     </ion-buttons>
   </ion-navbar>
 
 </ion-header>
 
-<ion-content padding no-bounce>
+<ion-content padding-top padding-left padding-right no-bounce>
   <ion-slides pager id="horizontalSlider">
     <ion-slide style="background-color: green">
       <h2>Slide 1</h2>
@@ -28,21 +28,34 @@
     </ion-slide>
   </ion-slides>
 
-  <ion-slides  id="verticalSlider" direction='vertical'  slidesPerView="2" spaceBetween="5em">
-    <ion-slide style="background-color: green">
-      <h2>Slide 1</h2>
-    </ion-slide>
+  <ion-slides  id="verticalSlider" direction='vertical'  slidesPerView="5">
 
-    <ion-slide style="background-color: blue">
-      <h2>Slide 2</h2>
-    </ion-slide>
+    <div id="spinnerContainer" *ngIf="showSpinner">
+      <ion-spinner id='loadingSpinner' name='crescent'></ion-spinner>
+    </div>
+    
+    <ion-slide *ngFor="let data of paymentData">
+      <div id="flex-container">
+          <div class="leftContainer">
+            <img id='profileIcon' src="assets/icon/{{data.type}}.svg">
+            <span class="dataDate">{{ convertMillisToDateString(data.date) }}</span>
+          </div>
+          <div class="middleContainer">
+            <p class="dataDescription">{{ data.description }}</p>
+            <p class="dataPerson">{{ data.payorName }}</p>        
+          </div>
+          <div class="rightContainer">
+              <span class="dataAmount">${{ data.amountDue }}</span>
+              <img class="dataStatusIcon" *ngIf="data.paid" src="assets/icon/paid.svg">
+              <img class="dataStatusIcon" *ngIf="!data.paid" src="assets/icon/pending.svg">
+          </div>
+      </div>
 
-    <ion-slide style="background-color: red">
-      <h2>Slide 3</h2>
     </ion-slide>
+    
   </ion-slides>
 
   <ion-fab id="fabButton">
-    <button ion-fab id="fabIconButton" (click)=presentAddReceiptSheet()><ion-icon name="add"></ion-icon></button>
+    <button ion-fab id="fabIconButton" (click)=presentAddPaymentSheet()><ion-icon name="add"></ion-icon></button>
   </ion-fab>
 </ion-content>
