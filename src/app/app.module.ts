@@ -9,6 +9,7 @@ import { MainPage } from '../pages/main/main';
 import { IconPopupPage } from '../pages/icon-popup/icon-popup';
 import { AddPaymentPage } from '../pages/add-payment/add-payment';
 import { SelectPersonPage } from '../pages/select-person/select-person';
+import { VerticalSliderPage } from '../pages/vertical-slider/vertical-slider';
 
 import { Sim } from '@ionic-native/sim';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -40,7 +41,8 @@ firebase.firestore().enablePersistence();
     MainPage,
     IconPopupPage,
     AddPaymentPage,
-    SelectPersonPage
+    SelectPersonPage,
+    VerticalSliderPage
   ],
   imports: [
     BrowserModule,
@@ -54,7 +56,8 @@ firebase.firestore().enablePersistence();
     MainPage,
     IconPopupPage,
     AddPaymentPage,
-    SelectPersonPage
+    SelectPersonPage,
+    VerticalSliderPage
   ],
   providers: [
     StatusBar,

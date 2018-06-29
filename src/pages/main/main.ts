@@ -23,34 +23,14 @@ import { FirestoreProvider } from '../../providers/firestore/firestore';
 export class MainPage {
   @ViewChild(Slides) verticalSlide: Slides;
   pages: any;
-  displayName: string;
   userProfile: any;
   rootPage: AuthenticationPage;
-  showSpinner: boolean = true;
-  paymentData = [];
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public actionSheetCtrl: ActionSheetController, public modalCtrl: ModalController, public _authProvider: AuthProvider, private _toastCtrl: ToastProvider, public popoverCtrl: PopoverController, public _firestoreProvider: FirestoreProvider) {
-    this.userProfile = _authProvider.getUserProfile();
-    this.displayName = this.userProfile.displayName;   
-    this.setListeners();
+    this.userProfile = _authProvider.getUserProfile();  
   }
 
   ionViewDidLoad() {
-  }
-
-  setListeners(){
-    var uid = this.userProfile.uid;
-    if(!uid) return;
-    // Listener for updates to list of payments
-    this._firestoreProvider.getDatabase().collection("users/" + uid + "/paymentRefs").onSnapshot((doc) => {
-      this._firestoreProvider.getAllPayments().then((data) => {
-        this.paymentData = data;
-        this.showSpinner = false;
-        this.verticalSlide.update();
-      }).catch((error) => {
-        console.log(error);
-      })
-    })
   }
 
   logout(){
@@ -92,7 +72,7 @@ export class MainPage {
           handler: () => {
             let paymentModal = this.modalCtrl.create(AddPaymentPage, { 
               paymentType: "Expenditure",
-              name: this.displayName,
+              name: this.userProfile.displayName,
               enablePaidOption: false,
               enableSendSMSReminder: false
             });
@@ -112,11 +92,5 @@ export class MainPage {
     if(data.success){
       this._toastCtrl.toastMessage("Payment successfully created", 3000);
     }
-  }
-
-  convertMillisToDateString(millisInput: string){
-    var date = new Date(millisInput);
-    if(!date) return "n/a";
-    return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
   }
 }

@@ -1,0 +1,26 @@
+<ion-slides  id="verticalSlider" direction='vertical'  slidesPerView="5">
+
+  <div id="spinnerContainer" *ngIf="showSpinner">
+    <ion-spinner id='loadingSpinner' name='crescent'></ion-spinner>
+  </div>
+  
+  <ion-slide *ngFor="let data of paymentData">
+    <div id="flex-container">
+        <div class="leftContainer">
+          <img id='profileIcon' src="assets/icon/{{data.type}}.svg">
+          <span class="dataDate">{{ convertMillisToDateString(data.date) }}</span>
+        </div>
+        <div class="middleContainer">
+          <p class="dataDescription">{{ data.description }}</p>
+          <p class="dataPerson">{{ data.payorName }}</p>        
+        </div>
+        <div class="rightContainer">
+            <span class="dataAmount">${{ data.amountDue }}</span>
+            <img class="dataStatusIcon" *ngIf="data.paid" src="assets/icon/paid.svg">
+            <img class="dataStatusIcon" *ngIf="!data.paid" src="assets/icon/pending.svg">
+        </div>
+    </div>
+
+  </ion-slide>
+  
+</ion-slides>
