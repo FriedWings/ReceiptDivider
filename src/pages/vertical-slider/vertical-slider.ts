@@ -33,11 +33,10 @@ export class VerticalSliderPage {
     // Listener for updates to list of payments
     this._firestoreProvider.getDatabase().collection("users/" + uid + "/paymentRefs").onSnapshot((doc) => {
       this._firestoreProvider.getAllPayments().then((data) => {
+        console.log(data);
         this.paymentData = data;
         this.showSpinner = false;
-        setTimeout(() => { // Fixes problem with vertical slider not updating immediately after data change
-          this.verticalSlide.update();
-        }, 500);            
+        this.verticalSlide.update();  
       }).catch((error) => {
         console.log(error);
       })

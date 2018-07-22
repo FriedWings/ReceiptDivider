@@ -45,10 +45,6 @@ export class FirestoreProvider {
 	addReceipt() {
 	}
 
-	// You must be receipt owner to delete
-	deleteReceipt(receiptID: string) {
-	}
-
 	addDirectPayment(directPaymentData: directPayment) {
 		let batch = this.database.batch();
 		let paymentsRef = this.database.collection("payments").doc();
@@ -80,7 +76,7 @@ export class FirestoreProvider {
 		})
 	}
 
-	//todo
+	// Todo
 	deletePayment(paymentId: string) {
 		return new Promise((resolve, reject) => {
 			resolve();
@@ -109,6 +105,10 @@ export class FirestoreProvider {
 		})
 	}
 
+	/*
+    * Update a payment
+    * @return {promise} a promise the resolves when successful and rejects when fails 
+    */ 
 	updatePayment(paymentId: string, updatedValues: object) {
 		return new Promise((resolve, reject) => {
 			var paymentsRef = this.paymentRef.doc(paymentId);
@@ -117,62 +117,65 @@ export class FirestoreProvider {
 		})
 	}
 
-	// get all related payments
+    /*
+    * Get all payments associated with the user
+    * @return {promise} 
+	* 	-If successful will contain an array of payments relating to the user
+	*	-If fails will contain the error message 
+    */ 
 	getAllPayments() {
 		return new Promise<any>((resolve, reject) => {
 			var uid = firebase.auth().currentUser.uid;
-			var userPaymentsRef = this.usersRef.doc(uid).collection("paymentRefs");
-			var directReferences = new Array;
+			var returnData = [];
+			if (!uid) reject("User not authenticated");
+			
+			this.getPaymentRefs().then((data) => {
+				for(let i = 0; i < data.length; i++) {
+					this.database.doc(data[i]).get()
+					.then((querySnapshot) => {
+						returnData.push(querySnapshot.data());
+
+						if (i == data.length - 1) {
+							returnData.sort(function (a, b) { return new Date(b.date).getTime() - new Date(a.date).getTime() });
+							resolve(returnData);
+						}
+					})
+				}
+			}).catch((err) => {
+				reject(err);
+			});
+		})
+	}
+
+    /*
+    * Get references to the payment objects associated with the user from the database
+    * @return {promise} 
+	* 	-If successful will contain an array of references to payments in the database
+	*	-If fails will contain the error message 
+    */ 
+	getPaymentRefs() {
+		return new Promise<any>((resolve, reject) => {
+			var uid = firebase.auth().currentUser.uid;
 			var returnData = [];
 			if (!uid) reject("User not authenticated");
 
-
-			// Uses inbuilt sort but cannot do logical "or" for .where function (need to check payor/payee)
-
-			// this.paymentRef.where("payor", "==", uid).orderBy("date").get()
-			// .then((querySnapshot) => {
-			// 	querySnapshot.forEach((doc) => {
-			// 		console.log(doc.data());
-			// 		var testDate = new Date(doc.data().date);
-			// 		console.log(testDate)
-			// 	})
-			// 	resolve("asds");
-			// }).catch((error)=>{
-			// 	console.log(error);
-			// 	reject();
-			// })
-
-			userPaymentsRef.get()
-				.then((querySnapshot) => {
+			this.usersRef.doc(uid).collection("paymentRefs").get()
+				.then((querySnapshot) => {					
 					querySnapshot.forEach((doc) => {
-						// doc.data() is never undefined for query doc snapshots
-						// console.log(doc.id, " => ", doc.data());
-						directReferences.push(doc.data().refToPayment);
+						returnData.push(doc.data().refToPayment);
 					});
-
-					directReferences.forEach((item, i) => {
-						this.database.doc(item).get()
-							.then((querySnapshot) => {
-								var source = querySnapshot.metadata.fromCache ? "local cache" : "server";
-								console.log("Data came from " + source);
-
-								returnData.push(querySnapshot.data());
-							}).catch(function (error) {
-								console.log(error);
-								reject(error);
-							})
-					})
-					returnData.sort(function (a, b) { return b.date - a.date });
 					resolve(returnData);
 				})
 				.catch(function (error) {
-					console.log("Error getting documents: ", error);
 					reject("Error obtaining documents");
 				});
 		})
 	}
 
-	// returns a promise
+    /*
+    * Add a user onto the database
+    * @return {promise} a promise the resolves when successful and rejects when fails 
+    */ 
 	addNewUser(nameInput: string) {
 		return new Promise((resolve, reject) => {
 			let uid = firebase.auth().currentUser.uid;
@@ -185,13 +188,16 @@ export class FirestoreProvider {
 		});
 	}
 
-	// return a promise
+    /*
+    * Remove all relating user data from the database
+    * @return {promise} a promise the resolves when successful and rejects when fails 
+    */ 
 	removeUser() {
 		let currentUser = firebase.auth().currentUser;
 		let uid = currentUser.uid;
 
 		return new Promise((resolve, reject) => {
-			if (!currentUser) reject("");
+			if (!currentUser) reject("User not found");
 
 			// Delete user firestore data
 			this.usersRef.doc(uid).delete().then(() => {
@@ -203,11 +209,15 @@ export class FirestoreProvider {
 		});
 	}
 
+	/*
+    * Change the stored name of the user
+    * @return {promise} a promise the resolves when successful and rejects when fails 
+    */ 
 	changeName(newName: string) {
 		let uid = firebase.auth().currentUser;
 
 		return new Promise((resolve, reject) => {
-			if (!uid) reject("");
+			if (!uid) reject("User not found");
 
 			this.usersRef.doc(uid).update({
 				name: newName
