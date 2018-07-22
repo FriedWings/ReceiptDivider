@@ -1,27 +1,36 @@
 page-authentication {
-	#phoneNumberDiv, #smsConfirmDiv {
-		padding-top: 5em;
-	}
-
-	ion-content {
-		background-image: url('/assets/imgs/temporary-background.jpg') no-repeat fixed;
-	    background-size: cover;
-
-	}
-
 	.authIonInput {
-		margin-bottom: 0.5em;
 		border-bottom: 0.05em solid white;
 		border-top: 0.05em solid white;
-		background-color: rgba(0,0,0,0.2);	
+		margin-top: 0.6em;
+		margin-bottom: 1em;
+
 		input {
 			text-align: center;
+			margin-right: 0px;
 		}
 	}
 
-	.ionItem {
-		background-color: rgba(0,0,0,0);
-		color: lightgrey;
+	#sendMsgSlide {
+		#phoneInputField {
+			#phoneIcon {
+				position: absolute;
+				left: 0.5em;
+				padding-top: 0.6em;
+			}
+		}
+	}
+
+	#inputCodeSlide {
+
+	}
+
+	#profileSetupSlide {
+
+	}
+
+	.content {
+		background-color: rgb(37, 31, 37);
 	}
 
 	#authPageSlides {

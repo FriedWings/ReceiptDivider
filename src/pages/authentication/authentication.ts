@@ -36,16 +36,6 @@ export class AuthenticationPage {
         'size': 'invisible'
       }); 
     }
-
-    this.sim.getSimInfo().then(
-      (info) => {
-        console.log('Sim info: ', info);
-        this.phoneNumber = this.getCountryCodeNumber(info.countryCode.toUpperCase())
-      },
-      (err) => console.log('Unable to get sim info: ', err)
-    );
-
-    // Lock the slides
     this.slides.lockSwipes(true);
   }
 
@@ -59,7 +49,7 @@ export class AuthenticationPage {
       this.slideTo(1);
     }).catch((err) => {
       this.showSpinner = false;
-      this._toastCtrl.toastMessage(err, 4000);
+      this._toastCtrl.toastMessage("Please ensure you have the area code included. Example +61412345678", 7000);
     }); 
   }
 
@@ -81,7 +71,7 @@ export class AuthenticationPage {
         this._toastCtrl.toastMessage('Too many requests sent. Please try again later.', 4000);
       }
       else{
-        this._toastCtrl.toastMessage('Please check phone number and resend verification code again!', 4000);
+        this._toastCtrl.toastMessage('Please check the phone number and resend verification code!', 4000);
       }
     })
   }
@@ -97,21 +87,18 @@ export class AuthenticationPage {
     let user = firebase.auth().currentUser;
     user.updateProfile({
       displayName: profileName,
-      // phoneNumber: user.phoneNumber,
       photoURL: null
     }).then(() => {
       this.showSpinner = false;
       this.finishSetup();
     }).catch((err) => {
       this.showSpinner = false;
-      this._toastCtrl.toastMessage('Please place a valid input', 4000);
+      this._toastCtrl.toastMessage('Please enter a valid input', 4000);
     });
   }
 
   finishSetup(){
-    console.log(firebase.auth().currentUser.displayName)
     if(!firebase.auth().currentUser.displayName) {
-      console.log('Sent');
       this.slideTo(2);
       return;
     }    

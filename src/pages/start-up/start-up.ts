@@ -32,17 +32,17 @@ export class StartUpPage {
   slides = [
     {
       title: "What are we!",
-      description: "<b>Receipt Divider</b> is an application!<br>A really nice application.<br>Revolutionary!",
+      description: "<b>Receipt Divider</b> is an application that allows users to track their expenditures and also split bills!",
       image: "assets/imgs/temporary-image.png"
     },
     {
-      title: "Split receipts!",
-      description: "Some temporary text.",
+      title: "Track Expenditure",
+      description: "See where your money is going and analyse your monthly expenditures!",
       image: "assets/imgs/temporary-image2.png"
     },
     {
-      title: "A phone!",
-      description: "Some temporary text.",
+      title: "Split Receipts",
+      description: "Take a photo of a receipt and send notifications to friends to pay up!",
       image: "assets/imgs/temporary-image3.png"
     }
   ];

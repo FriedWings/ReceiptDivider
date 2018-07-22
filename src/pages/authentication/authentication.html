@@ -1,17 +1,19 @@
-<ion-content padding class="no-scroll">
+<ion-content padding class="no-scroll content">
   <ion-slides spaceBetween='20' id="authPageSlides">
-    <ion-slide>
+    <ion-slide id="sendMsgSlide">
       <h2 class="slide-title">SMS Authentication</h2>
-
-      <ion-input class='authIonInput' type="number" placeholder="Phone number" [(ngModel)]=phoneNumber></ion-input>
+      
+      <div id="phoneInputField">
+        <ion-icon id="phoneIcon" name="phone-portrait"></ion-icon>
+        <ion-input class='authIonInput' type="number" placeholder="Phone number" [(ngModel)]=phoneNumber></ion-input>  
+      </div>
 
       <button ion-button small outline strong color='secondary' (click)='sendSms(phoneNumber)'>Send SMS</button>
       <div style="height: 2.5em"><ion-spinner *ngIf="showSpinner" id='loadingSpinner' name='crescent'></ion-spinner></div>
-
     </ion-slide>
 
-    <ion-slide>
-      <h2 class="slide-title">Login</h2>
+    <ion-slide id="inputCodeSlide">
+      <h2 class="slide-title">Enter Code</h2>
       <ion-input class='authIonInput' min="0" max="999999" type="number" placeholder="Code" [(ngModel)]=smsCode></ion-input>
 
       <button ion-button small outline strong color='secondary' (click)='signIn(smsCode)'>Login</button>
@@ -19,7 +21,7 @@
       <div style="height: 2.5em"><ion-spinner *ngIf="showSpinner" id='loadingSpinner' name='crescent'></ion-spinner></div>
     </ion-slide>
 
-    <ion-slide>
+    <ion-slide id="profileSetupSlide">
       <h2 class="slide-title">Setup Account</h2>
       <ion-input class='authIonInput' placeholder="Profile Name" [(ngModel)]=profileName></ion-input>
       

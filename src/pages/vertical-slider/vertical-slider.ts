@@ -25,6 +25,8 @@ export class VerticalSliderPage {
     this.setListeners();
   }
 
+  ionViewDidLoad() {}
+
   setListeners(){
     var uid = this.userProfile.uid;
     if(!uid) return;
@@ -33,14 +35,13 @@ export class VerticalSliderPage {
       this._firestoreProvider.getAllPayments().then((data) => {
         this.paymentData = data;
         this.showSpinner = false;
-        this.verticalSlide.update();
+        setTimeout(() => { // Fixes problem with vertical slider not updating immediately after data change
+          this.verticalSlide.update();
+        }, 500);            
       }).catch((error) => {
         console.log(error);
       })
     })
-  }
-
-  ionViewDidLoad() {
   }
 
   convertMillisToDateString(millisInput: string){
